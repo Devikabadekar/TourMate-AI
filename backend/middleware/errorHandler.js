@@ -103,7 +103,5 @@ export const asyncHandler = (fn) => {
 /**
  * Not found middleware
  */
-export const notFound = (req, res, next) => {
-  const error = new ApiError(`Route ${req.originalUrl} not found`, 404);
-  next(error);
-}; 
+// Removed duplicate import and export of notFound
+// ... existing code ... 

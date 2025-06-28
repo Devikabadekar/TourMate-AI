@@ -18,7 +18,7 @@ import paymentRoutes from './routes/payments.js';
 
 // Import middleware
 import { errorHandler } from './middleware/errorHandler.js';
-import { notFound } from './middleware/notFound.js';
+import notFound from './middleware/notFound.js';
 import { logger } from './utils/logger.js';
 
 // Import database connection
@@ -87,6 +87,11 @@ app.get('/health', (req, res) => {
     uptime: process.uptime(),
     environment: process.env.NODE_ENV,
   });
+});
+
+// Health check route
+app.get('/', (req, res) => {
+  res.send('TourMate-AI backend is live!');
 });
 
 // API routes
