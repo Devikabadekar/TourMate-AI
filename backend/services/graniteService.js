@@ -1,7 +1,10 @@
 import AssistantV2 from 'ibm-watson/assistant/v2.js';
 import { IamAuthenticator } from 'ibm-cloud-sdk-core';
+import dotenv from 'dotenv';
 import { logger } from '../utils/logger.js';
-import { redisClient } from '../config/redis.js';
+import { cacheSet, cacheGet } from '../config/redis.js';
+
+dotenv.config();
 
 class GraniteService {
   constructor() {
@@ -95,11 +98,11 @@ class GraniteService {
   async generateTripItinerary(tripData) {
     try {
       const cacheKey = `trip_${JSON.stringify(tripData)}`;
-      const cached = await redisClient.get(cacheKey);
+      const cached = await cacheGet(cacheKey);
       
       if (cached) {
         logger.info('Returning cached trip itinerary');
-        return JSON.parse(cached);
+        return cached;
       }
 
       const prompt = this.buildTripPrompt(tripData);
@@ -108,7 +111,7 @@ class GraniteService {
       const itinerary = this.parseItineraryResponse(response);
       
       // Cache the result for 1 hour
-      await redisClient.setex(cacheKey, 3600, JSON.stringify(itinerary));
+      await cacheSet(cacheKey, itinerary, 3600);
       
       return itinerary;
     } catch (error) {

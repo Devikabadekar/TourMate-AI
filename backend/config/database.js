@@ -16,10 +16,14 @@ export const connectDB = async () => {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       maxPoolSize: 10,
+      minPoolSize: 2,
       serverSelectionTimeoutMS: 5000,
       socketTimeoutMS: 45000,
       bufferCommands: false,
-      bufferMaxEntries: 0,
+      retryWrites: true,
+      w: 'majority',
+      connectTimeoutMS: 10000,
+      heartbeatFrequencyMS: 10000,
     };
 
     await mongoose.connect(mongoURI, options);
